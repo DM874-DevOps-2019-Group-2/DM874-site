@@ -14,7 +14,7 @@ import {Theme, withStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { flexbox } from '@material-ui/system';
 import axios from 'axios';
-import { Link as RouterLink } from 'react-router-dom';
+import {Link as RouterLink, Redirect} from 'react-router-dom';
 
 const signinStyle = (theme: Theme) => ({
     '@global': {
@@ -47,6 +47,8 @@ interface SignInProps {
 interface SignInState {
     username: string | null;
     password: string | null;
+    loginError: string | null;
+    loggedIn: boolean;
 }
 
 class Signin extends React.Component<SignInProps, SignInState> {
@@ -54,7 +56,9 @@ class Signin extends React.Component<SignInProps, SignInState> {
         super(props);
         this.state = {
             username: null,
-            password: null
+            password: null,
+            loginError: null,
+            loggedIn: false
         };
     }
 
@@ -66,15 +70,24 @@ class Signin extends React.Component<SignInProps, SignInState> {
     };
 
     public handleSubmit = (event: any) => {
-        console.log(this.state.username);
-        console.log(this.state.password);
         axios.post("/login", this.state).then((r) => {
-            console.log(r);
+            const asString = (r.data as string);
+            if (asString.startsWith("Token:")) {
+                document.cookie = "dm874_jwt=" + asString.slice("Token:".length);
+                console.log(document.cookie);
+                this.setState({loggedIn: true});
+            } else {
+                this.setState({loginError: asString});
+            }
         });
     };
 
     public  render() {
         const classes = this.props.classes;
+
+        if (this.state.loggedIn) {
+            return <Redirect to={"/home"}/>;
+        }
 
         return (
             <Container component="main" maxWidth="xs">

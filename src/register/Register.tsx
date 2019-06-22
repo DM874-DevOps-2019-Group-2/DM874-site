@@ -15,6 +15,9 @@ import {Theme, withStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { flexbox } from '@material-ui/system';
 import axios from 'axios';
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogActions from "@material-ui/core/DialogActions";
 
 const registerStyle = (theme: Theme) => ({
     '@global': {
@@ -47,6 +50,7 @@ interface RegisterProps {
 interface RegisterState {
     username: string | null;
     password: string | null;
+    showDialogue: boolean;
 }
 
 class Register extends React.Component<RegisterProps, RegisterState> {
@@ -54,16 +58,17 @@ class Register extends React.Component<RegisterProps, RegisterState> {
         super(props);
         this.state = {
             username: null,
-            password: null
+            password: null,
+            showDialogue: false
         };
     }
 
 
     public handleSubmit = (event: any) => {
-        console.log(this.state.username);
-        console.log(this.state.password);
         axios.post("/register", this.state).then((r) => {
             console.log(r);
+        }).then((r) => {
+            this.setState({showDialogue: true});
         });
     };
 
@@ -71,58 +76,73 @@ class Register extends React.Component<RegisterProps, RegisterState> {
         const classes = this.props.classes;
 
         return (
-            <Container component="main" maxWidth="xs">
-                <CssBaseline />
-                <div className={classes.papers}>
-                    <div className={classes.form}>
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="username"
-                            label="Username"
-                            name="username"
-                            autoComplete="username"
-                            autoFocus
-                            onChange={attr => this.setState({username: attr.target.value})}
-                        />
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                            onChange={attr => this.setState({password: attr.target.value})}
-                        />
-                        <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
-                        />
-                        <Button
-                            type="button"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                            onClick={this.handleSubmit}
-                        >
-                            Sign Up
-                        </Button>
-                        <Grid container>
-                            <Grid item>
-                                <Link component={RouterLink} to="/signin" variant="body2">
-                                    {"Sign in"}
-                                </Link>
+            <div>
+                <Container component="main" maxWidth="xs">
+                    <CssBaseline />
+                    <div className={classes.papers}>
+                        <div className={classes.form}>
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="username"
+                                label="Username"
+                                name="username"
+                                autoComplete="username"
+                                autoFocus
+                                onChange={attr => this.setState({username: attr.target.value})}
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="password"
+                                label="Password"
+                                type="password"
+                                id="password"
+                                autoComplete="current-password"
+                                onChange={attr => this.setState({password: attr.target.value})}
+                            />
+                            <FormControlLabel
+                                control={<Checkbox value="remember" color="primary" />}
+                                label="Remember me"
+                            />
+                            <Button
+                                type="button"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                className={classes.submit}
+                                onClick={this.handleSubmit}
+                            >
+                                Sign Up
+                            </Button>
+                            <Grid container>
+                                <Grid item>
+                                    <Link component={RouterLink} to="/signin" variant="body2">
+                                        {"Sign in"}
+                                    </Link>
+                                </Grid>
                             </Grid>
-                        </Grid>
+                        </div>
                     </div>
-                </div>
-            </Container>
+                </Container>
+                <Dialog
+                    open={this.state.showDialogue}
+                    onClose={(x) => this.setState({showDialogue: false})}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{"You have successfully registered."}</DialogTitle>
+                    <DialogActions>
+                        <Button onClick={(x) => this.setState({showDialogue: false})} color="primary">
+                            Ok
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
         );
     }
 }

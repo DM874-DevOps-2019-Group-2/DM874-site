@@ -6,6 +6,7 @@ import * as serviceWorker from './serviceWorker';
 import {Route, Link, BrowserRouter} from 'react-router-dom'
 import Register from "./register/Register";
 import Signin from "./signin/Signin";
+import Landing from "./home/Landing";
 
 const routing = (
   <BrowserRouter>
@@ -13,6 +14,7 @@ const routing = (
           <Route exact path="/" component={App} />
           <Route exact path="/signin" component={Signin} />
           <Route exact path="/register" component={Register} />
+          <Route exact path="/home" component={Landing} />
       </div>
   </BrowserRouter>
 );
