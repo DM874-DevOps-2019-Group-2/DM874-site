@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import {Theme, withStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { flexbox } from '@material-ui/system';
+import axios from 'axios';
 
 const signinStyle = (theme: Theme) => ({
     '@global': {
@@ -42,15 +43,37 @@ interface SignInProps {
     classes?: any;
 }
 
-class Signin extends React.Component<SignInProps, any> {
-    public render() {
+interface SignInState {
+    username: string | null;
+    password: string | null;
+}
+
+class Signin extends React.Component<SignInProps, SignInState> {
+    constructor(props: SignInProps) {
+        super(props);
+        this.state = {
+            username: null,
+            password: null
+        };
+    }
+
+
+    public handleSubmit = (event: any) => {
+        console.log(this.state.username);
+        console.log(this.state.password);
+        axios.post("/login", this.state).then((r) => {
+            console.log(r);
+        });
+    };
+
+    public  render() {
         const classes = this.props.classes;
 
         return (
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <div className={classes.papers}>
-                    <form className={classes.form} noValidate>
+                    <div className={classes.form}>
                         <TextField
                             variant="outlined"
                             margin="normal"
@@ -61,6 +84,7 @@ class Signin extends React.Component<SignInProps, any> {
                             name="username"
                             autoComplete="username"
                             autoFocus
+                            onChange={attr => this.setState({username: attr.target.value})}
                         />
                         <TextField
                             variant="outlined"
@@ -72,17 +96,19 @@ class Signin extends React.Component<SignInProps, any> {
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            onChange={attr => this.setState({password: attr.target.value})}
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
                             label="Remember me"
                         />
                         <Button
-                            type="submit"
+                            type="button"
                             fullWidth
                             variant="contained"
                             color="primary"
                             className={classes.submit}
+                            onClick={this.handleSubmit}
                         >
                             Sign In
                         </Button>
@@ -98,7 +124,7 @@ class Signin extends React.Component<SignInProps, any> {
                                 </Link>
                             </Grid>
                         </Grid>
-                    </form>
+                    </div>
                 </div>
             </Container>
         );
