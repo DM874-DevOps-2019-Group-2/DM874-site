@@ -1,5 +1,4 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -7,41 +6,12 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import {Theme, withStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { flexbox } from '@material-ui/system';
 import axios from 'axios';
 import {Link as RouterLink, Redirect} from 'react-router-dom';
-
-const signinStyle = (theme: Theme) => ({
-    '@global': {
-        body: {
-            backgroundColor: theme.palette.common.white,
-        },
-    },
-    papers: {
-        marginTop: theme.spacing(8),
-        display: 'flex',
-        alignItems: 'center',
-    },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(1),
-    },
-    submit: {
-        margin: theme.spacing(3, 0, 2),
-    },
-});
+import '../index.css';
 
 interface SignInProps {
-    classes?: any;
 }
 
 interface SignInState {
@@ -51,7 +21,7 @@ interface SignInState {
     loggedIn: boolean;
 }
 
-class Signin extends React.Component<SignInProps, SignInState> {
+export default class Signin extends React.Component<SignInProps, SignInState> {
     constructor(props: SignInProps) {
         super(props);
         this.state = {
@@ -74,7 +44,6 @@ class Signin extends React.Component<SignInProps, SignInState> {
             const asString = (r.data as string);
             if (asString.startsWith("Token:")) {
                 document.cookie = "dm874_jwt=" + asString.slice("Token:".length);
-                console.log(document.cookie);
                 this.setState({loggedIn: true});
             } else {
                 this.setState({loginError: asString});
@@ -83,7 +52,6 @@ class Signin extends React.Component<SignInProps, SignInState> {
     };
 
     public  render() {
-        const classes = this.props.classes;
 
         if (this.state.loggedIn) {
             return <Redirect to={"/home"}/>;
@@ -92,8 +60,8 @@ class Signin extends React.Component<SignInProps, SignInState> {
         return (
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
-                <div className={classes.papers}>
-                    <div className={classes.form}>
+                <div className={"papers"}>
+                    <div className={"form"}>
                         <TextField
                             variant="outlined"
                             margin="normal"
@@ -127,7 +95,7 @@ class Signin extends React.Component<SignInProps, SignInState> {
                             fullWidth
                             variant="contained"
                             color="primary"
-                            className={classes.submit}
+                            className={"submit"}
                             onClick={this.handleSubmit}
                         >
                             Sign In
@@ -146,4 +114,4 @@ class Signin extends React.Component<SignInProps, SignInState> {
     }
 }
 
-export default withStyles(signinStyle, {withTheme: true})(Signin as any) as any;
+//export default withStyles(signinStyle, {withTheme: true})(Signin as any) as any;

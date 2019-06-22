@@ -1,20 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {Route, Link, BrowserRouter} from 'react-router-dom'
 import Register from "./register/Register";
 import Signin from "./signin/Signin";
-import Landing from "./home/Landing";
+import Landing from "./Landing";
+import Home from "./home/Home";
+import Metrics from "./metrics/Metrics";
 
 const routing = (
   <BrowserRouter>
-      <div>
-          <Route exact path="/" component={App} />
+      <div className={"global"}>
+          <Route exact path="/" render={(props) => (
+              <Landing child={<Home/>}/>
+          )} />
           <Route exact path="/signin" component={Signin} />
           <Route exact path="/register" component={Register} />
-          <Route exact path="/home" component={Landing} />
+          <Route exact path="/home" render={(props) => (
+              <Landing child={<Home/>}/>
+          )} />
+          <Route exact path="/metrics" render={(props) => (
+              <Landing child={<Metrics/>}/>
+          )} />
       </div>
   </BrowserRouter>
 );
