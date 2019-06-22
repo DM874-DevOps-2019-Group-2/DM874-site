@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
+import { Link as RouterLink } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -14,9 +15,8 @@ import {Theme, withStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { flexbox } from '@material-ui/system';
 import axios from 'axios';
-import { Link as RouterLink } from 'react-router-dom';
 
-const signinStyle = (theme: Theme) => ({
+const registerStyle = (theme: Theme) => ({
     '@global': {
         body: {
             backgroundColor: theme.palette.common.white,
@@ -40,17 +40,17 @@ const signinStyle = (theme: Theme) => ({
     },
 });
 
-interface SignInProps {
+interface RegisterProps {
     classes?: any;
 }
 
-interface SignInState {
+interface RegisterState {
     username: string | null;
     password: string | null;
 }
 
-class Signin extends React.Component<SignInProps, SignInState> {
-    constructor(props: SignInProps) {
+class Register extends React.Component<RegisterProps, RegisterState> {
+    constructor(props: RegisterProps) {
         super(props);
         this.state = {
             username: null,
@@ -58,17 +58,11 @@ class Signin extends React.Component<SignInProps, SignInState> {
         };
     }
 
-    componentDidMount = (): void => {
-        const jwt = localStorage.getItem("dm874-jwt");
-
-        if (jwt == null) {
-        }
-    };
 
     public handleSubmit = (event: any) => {
         console.log(this.state.username);
         console.log(this.state.password);
-        axios.post("/login", this.state).then((r) => {
+        axios.post("/register", this.state).then((r) => {
             console.log(r);
         });
     };
@@ -117,12 +111,12 @@ class Signin extends React.Component<SignInProps, SignInState> {
                             className={classes.submit}
                             onClick={this.handleSubmit}
                         >
-                            Sign In
+                            Sign Up
                         </Button>
                         <Grid container>
                             <Grid item>
-                                <Link component={RouterLink} to="/register" variant="body2">
-                                    {"Don't have an account? Sign Up"}
+                                <Link component={RouterLink} to="/signin" variant="body2">
+                                    {"Sign in"}
                                 </Link>
                             </Grid>
                         </Grid>
@@ -133,4 +127,4 @@ class Signin extends React.Component<SignInProps, SignInState> {
     }
 }
 
-export default withStyles(signinStyle, {withTheme: true})(Signin as any) as any;
+export default withStyles(registerStyle, {withTheme: true})(Register as any) as any;
