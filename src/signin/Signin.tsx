@@ -10,6 +10,7 @@ import Container from '@material-ui/core/Container';
 import axios from 'axios';
 import {Link as RouterLink, Redirect} from 'react-router-dom';
 import '../index.css';
+import Cookies from "js-cookie";
 
 interface SignInProps {
 }
@@ -32,18 +33,11 @@ export default class Signin extends React.Component<SignInProps, SignInState> {
         };
     }
 
-    componentDidMount = (): void => {
-        const jwt = localStorage.getItem("dm874-jwt");
-
-        if (jwt == null) {
-        }
-    };
-
     public handleSubmit = (event: any) => {
         axios.post("/login", this.state).then((r) => {
             const asString = (r.data as string);
             if (asString.startsWith("Token:")) {
-                document.cookie = "dm874_jwt=" + asString.slice("Token:".length);
+                Cookies.set("dm874_jwt", asString.slice("Token:".length));
                 this.setState({loggedIn: true});
             } else {
                 this.setState({loginError: asString});

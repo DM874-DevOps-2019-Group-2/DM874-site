@@ -8,13 +8,12 @@ import Signin from "./signin/Signin";
 import Landing from "./Landing";
 import Home from "./home/Home";
 import Metrics from "./metrics/Metrics";
+import App from "./App";
 
 const routing = (
   <BrowserRouter>
       <div className={"global"}>
-          <Route exact path="/" render={(props) => (
-              <Landing child={<Home/>}/>
-          )} />
+          <Route exact path="/" component={App} />
           <Route exact path="/signin" component={Signin} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/home" render={(props) => (

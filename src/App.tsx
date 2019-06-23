@@ -1,21 +1,19 @@
 import React from 'react';
 import './App.css';
 import Signin from "./signin/Signin";
+import {Redirect} from "react-router";
+import * as Cookies from "js-cookie";
 
 const App: React.FC = () => {
-    const jwt = localStorage.getItem("dm874-jwt");
+    const jwt = Cookies.get('dm874_jwt');
 
-    if (jwt == null) {
+    if (jwt !== undefined && jwt.length !== 0) {
         return (
-            <div>
-                <Signin></Signin>
-            </div>
+            <Redirect to={"/home"}/>
         );
     } else {
         return (
-            <div>
-                <h1>YOU ARE SIGNED IN!</h1>
-            </div>
+            <Redirect to={"/signin"}/>
         );
     }
 };

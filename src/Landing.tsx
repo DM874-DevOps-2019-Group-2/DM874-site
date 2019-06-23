@@ -12,6 +12,7 @@ import MetricsIcon from '@material-ui/icons/NetworkWifi';
 import LogoutIcon from '@material-ui/icons/SupervisedUserCircle';
 import { Link as RouterLink } from 'react-router-dom';
 import Link from "@material-ui/core/Link";
+import * as Cookies from "js-cookie";
 
 interface LandingProps {
     child: React.ReactNode;
@@ -28,6 +29,10 @@ export default class Landing extends React.Component<LandingProps, LandingState>
 
         };
     }
+
+    logout = () => {
+        Cookies.remove("dm874_jwt");
+    };
 
     public render() {
         return (
@@ -54,7 +59,7 @@ export default class Landing extends React.Component<LandingProps, LandingState>
                     </List>
                     <Divider />
                     <List>
-                        <ListItem button key={"Logout"} component={RouterLink} to="/metrics" >
+                        <ListItem button key={"Logout"} onClick={this.logout} component={RouterLink} to="/" >
                             <ListItemIcon>{<LogoutIcon/>}</ListItemIcon>
                             <ListItemText primary={"Logout"} />
                         </ListItem>
