@@ -24,7 +24,7 @@ export default class Metrics extends React.Component<MetricsProps, MetricsState>
     public  render() {
 
         return (
-            <Container component="main" maxWidth="md">
+            <Container component="main" maxWidth="lg">
                 <Box m={3}/>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
