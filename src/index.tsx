@@ -9,6 +9,7 @@ import Landing from "./Landing";
 import Home from "./home/Home";
 import Metrics from "./metrics/Metrics";
 import App from "./App";
+import ChatRooms from "./chatrooms/ChatRooms";
 
 const routing = (
   <BrowserRouter>
@@ -21,6 +22,9 @@ const routing = (
           )} />
           <Route exact path="/metrics" render={(props) => (
               <Landing child={<Metrics/>}/>
+          )} />
+          <Route exact path="/chatrooms" render={(props) => (
+              <Landing child={<ChatRooms/>}/>
           )} />
       </div>
   </BrowserRouter>

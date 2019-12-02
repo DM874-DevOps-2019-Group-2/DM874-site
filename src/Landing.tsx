@@ -10,9 +10,11 @@ import MailIcon from '@material-ui/icons/Mail';
 import HomeIcon from '@material-ui/icons/Home';
 import MetricsIcon from '@material-ui/icons/NetworkWifi';
 import LogoutIcon from '@material-ui/icons/SupervisedUserCircle';
+import ChatBubbleOutlineOutlinedIcon from '@material-ui/icons/ChatBubbleOutlineOutlined';
 import { Link as RouterLink } from 'react-router-dom';
 import Link from "@material-ui/core/Link";
 import * as Cookies from "js-cookie";
+import ChatRooms from "./chatrooms/ChatRooms";
 
 interface LandingProps {
     child: React.ReactNode;
@@ -55,6 +57,10 @@ export default class Landing extends React.Component<LandingProps, LandingState>
                         <ListItem button key={"Metrics"} component={RouterLink} to="/metrics" >
                             <ListItemIcon>{<MetricsIcon/>}</ListItemIcon>
                             <ListItemText primary={"Metrics"} />
+                        </ListItem>
+                        <ListItem button key={"ChatRooms"} component={RouterLink} to="/chatrooms" >
+                            <ListItemIcon>{<ChatBubbleOutlineOutlinedIcon/>}</ListItemIcon>
+                            <ListItemText primary={"Chat rooms"} />
                         </ListItem>
                     </List>
                     <Divider />
