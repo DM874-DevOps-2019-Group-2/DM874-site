@@ -7,8 +7,14 @@ import Register from "./register/Register";
 import Signin from "./signin/Signin";
 import Landing from "./Landing";
 import Home from "./home/Home";
-import Metrics from "./metrics/Metrics";
 import App from "./App";
+import LoggedInFrame from "./global/LoggedInFrame";
+import Soogning from "./soogning/Soogning";
+import Analytics from "./analytics/Analytics";
+import Settings from "./settings/Settings";
+import MaybeWebsocket from "./util/MaybeWebsocket";
+import HostString from "./util/HostString";
+import * as Cookies from "js-cookie";
 
 const routing = (
   <BrowserRouter>
@@ -16,11 +22,21 @@ const routing = (
           <Route exact path="/" component={App} />
           <Route exact path="/signin" component={Signin} />
           <Route exact path="/register" component={Register} />
-          <Route exact path="/home" render={(props) => (
-              <Landing child={<Home/>}/>
+          <Route exact path="/home" render={(props) => {
+              MaybeWebsocket.set(() => new WebSocket("ws://" + HostString + "/ws", Cookies.get('dm874_jwt')));
+
+              return (
+                  <LoggedInFrame child={<Home/>}/>
+              )
+          }} />
+          <Route exact path="/soogning" render={(props) => (
+              <LoggedInFrame child={<Soogning/>}/>
           )} />
-          <Route exact path="/metrics" render={(props) => (
-              <Landing child={<Metrics/>}/>
+          <Route exact path="/analytics" render={(props) => (
+              <LoggedInFrame child={<Analytics/>}/>
+          )} />
+          <Route exact path="/settings" render={(props) => (
+              <LoggedInFrame child={<Settings/>}/>
           )} />
       </div>
   </BrowserRouter>

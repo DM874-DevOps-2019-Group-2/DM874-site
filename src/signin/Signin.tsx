@@ -11,6 +11,9 @@ import axios from 'axios';
 import {Link as RouterLink, Redirect} from 'react-router-dom';
 import '../index.css';
 import Cookies from "js-cookie";
+import ApiInterface from '../util/ApiInterface';
+import HostString from "../util/HostString";
+import AuthHost from "../util/AuthHost";
 
 interface SignInProps {
 }
@@ -20,6 +23,16 @@ interface SignInState {
     password: string | null;
     loginError: string | null;
     loggedIn: boolean;
+}
+
+interface RequestJsonBody {
+    username: string
+    password: string
+}
+
+interface ResponseJson {
+    $type: string
+    payload: string
 }
 
 export default class Signin extends React.Component<SignInProps, SignInState> {
@@ -33,19 +46,44 @@ export default class Signin extends React.Component<SignInProps, SignInState> {
         };
     }
 
-    public handleSubmit = (event: any) => {
-        axios.post("/login", this.state).then((r) => {
-            const asString = (r.data as string);
-            if (asString.startsWith("Token:")) {
-                Cookies.set("dm874_jwt", asString.slice("Token:".length));
-                this.setState({loggedIn: true});
+    private authenticate = async (requestBody: RequestJsonBody) => {
+        const host = AuthHost;
+
+        const additional = () => {
+            if (host.startsWith("localhost")) {
+                return "http://";
             } else {
-                this.setState({loginError: asString});
+                return "";
             }
+        };
+
+        let response = await fetch(additional() + host, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: JSON.stringify(requestBody)
+        }).then((e) => {
+            console.log(e.body)
+            return e
+        });
+
+        return await response.json();
+    };
+
+    public handleSubmit = (event: any) => {
+        const requestBody: RequestJsonBody = {
+            username: this.state.username as string,
+            password: this.state.password as string
+        };
+
+        this.authenticate(requestBody).then((responseJson: ResponseJson) => {
+            Cookies.set("dm874_jwt", responseJson.payload);
+            this.setState({loggedIn: true});
         });
     };
 
-    public  render() {
+    public render() {
 
         if (this.state.loggedIn) {
             return <Redirect to={"/home"}/>;
@@ -62,7 +100,7 @@ export default class Signin extends React.Component<SignInProps, SignInState> {
                             required
                             fullWidth
                             id="username"
-                            label="Username"
+                            label="Email"
                             name="username"
                             autoComplete="username"
                             autoFocus
