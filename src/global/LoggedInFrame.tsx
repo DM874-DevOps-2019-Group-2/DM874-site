@@ -85,7 +85,7 @@ class LoggedInFrameC extends React.Component<LoggedInFrameProps, LoggedInFrameSt
                 <AppBar position="sticky" className={this.props.classes.appBar}>
                     <Toolbar className={this.props.classes.toolbar}>
                         <Typography color="inherit" aria-label="Menu" align={"center"}>
-                            Imada sodavandsordning
+                            DM874-chat
                         </Typography>
                     </Toolbar>
                 </AppBar>
@@ -103,14 +103,6 @@ class LoggedInFrameC extends React.Component<LoggedInFrameProps, LoggedInFrameSt
                                     <ListItem button key={"Home"} component={RouterLink} to="/home" >
                                         <ListItemIcon>{<HomeIcon color="primary" />}</ListItemIcon>
                                         <ListItemText primary={<Typography variant="body1" align='justify'>Home</Typography>} />
-                                    </ListItem>
-                                    <ListItem button key={"Søgning"} component={RouterLink} to="/soogning" >
-                                        <ListItemIcon>{<Explore color="primary" />}</ListItemIcon>
-                                        <ListItemText primary={<Typography variant="body1" align='justify'>Søgning</Typography>} />
-                                    </ListItem>
-                                    <ListItem button key={"Analyse"} component={RouterLink} to="/analytics" >
-                                        <ListItemIcon>{<Analytics color="primary" />}</ListItemIcon>
-                                        <ListItemText primary={<Typography variant="body1" align='justify'>Analyse</Typography>} />
                                     </ListItem>
                                     <ListItem button key={"Settings"} component={RouterLink} to="/settings" >
                                         <ListItemIcon>{<Settings color="primary" />}</ListItemIcon>

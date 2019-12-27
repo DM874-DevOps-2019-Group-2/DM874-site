@@ -1,5 +1,5 @@
 {
-  "name": "imada-webapp",
+  "name": "dm874-webapp",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -21,7 +21,7 @@
     "react-google-charts": "^3.0.13",
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
-    "react-scripts": "3.0.1",
+    "react-scripts": "2.1.8",
     "react-select": "^3.0.4",
     "typescript": "3.5.2",
     "react-swipeable-views": "^0.13.3"

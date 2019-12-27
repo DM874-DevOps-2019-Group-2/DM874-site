@@ -60,19 +60,91 @@ const styles = (theme: Theme) => createStyles({
 interface HomeProps extends WithStyles<typeof styles> {
 }
 
+interface Message {
+    sender: string
+    message: string
+}
+
 interface HomeState {
     uploadingFile: boolean
+    name: string
+    newMessage: boolean
+    message: string
+    messages: Array<Message>
+    userIds: number[]
 }
 
 class HomeC extends React.Component<HomeProps, HomeState> {
     constructor(props: HomeProps) {
         super(props);
+
+        MaybeWebsocket.registerHandler(0, (data) => {
+            try {
+                const parsed = JSON.parse(data)
+
+                if (parsed.$type === "ReceiveMessage") {
+                    this.setState({ messages: this.state.messages.concat([{ sender: "Anon", message: parsed.msg as string }]) })
+                }
+            } catch (e) {
+
+            }
+        });
+
         this.state = {
             uploadingFile: false,
+            name: "Test",
+            newMessage: true,
+            message: "",
+            messages: [],
+            userIds: []
         };
     }
 
+    public newMessageField(): React.ReactNode | null {
+        if (this.state.newMessage) {
+            return (
+                <Box margin={3}>
+                    <TextField id="outlined-basic" label="New message" variant="outlined" fullWidth
+                               onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => this.setState({ message: e.target.value})}
+                    />
+                    <Box p={1}/>
+                    <Button variant="contained" color="primary" fullWidth onClick={(e) => {
+                        const newStuff = this.state.messages.concat([{
+                            message: this.state.message,
+                            sender: "You"
+                        }]);
+
+                        this.setState({ messages: newStuff })
+
+                        const sendMessage = {
+                            $type: "SendMessage",
+                            message: this.state.message,
+                            destinationUsers: this.state.userIds
+                        };
+
+                        MaybeWebsocket.send(JSON.stringify(sendMessage))
+                    }}>
+                        Send
+                    </Button>
+                </Box>
+            );
+        } else {
+            return null;
+        }
+    };
+
+    public getTableRows(): Array<React.ReactNode> {
+        return (this.state.messages.map((value: Message, index: number) => {
+            return (<TableRow key={index}>
+                <TableCell align="left">{value.sender}</TableCell>
+                <TableCell align="left">{value.message}</TableCell>
+            </TableRow>);
+        }));
+    };
+
     public render() {
+        const nameField = this.newMessageField();
+
         return (
             <div className={this.props.classes.root}>
                 <Grid container spacing={5}>
@@ -89,20 +161,7 @@ class HomeC extends React.Component<HomeProps, HomeState> {
                             <Box paddingTop={4}/>
                             <Container maxWidth={"xl"}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={1}>
-                                        <List component="nav" aria-label="secondary mailbox folders">
-                                            <ListItem button>
-                                                <ListItemText primary="Valde" />
-                                            </ListItem>
-                                            <ListItem button>
-                                                <ListItemText primary="Jakob" />
-                                            </ListItem>
-                                            <ListItem button>
-                                                <ListItemText primary="Henrik" />
-                                            </ListItem>
-                                        </List>
-                                    </Grid>
-                                    <Grid item xs={9}>
+                                    <Grid item xs={12}>
                                         <Box paddingTop={1}/>
                                         <Card>
                                             <Table>
@@ -112,11 +171,10 @@ class HomeC extends React.Component<HomeProps, HomeState> {
                                                         <TableCell align="left">Message</TableCell>
                                                     </TableRow>
                                                 </TableHead>
-                                                <TableRow key={0}>
-                                                    <TableCell align="left">{"John"}</TableCell>
-                                                    <TableCell align="left">{"Hello world"}</TableCell>
-                                                </TableRow>
+                                                {this.getTableRows()}
                                             </Table>
+                                            {nameField}
+
                                         </Card>
                                     </Grid>
                                 </Grid>

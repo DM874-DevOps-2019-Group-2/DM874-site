@@ -1,7 +1,7 @@
 
 class GetSet {
     a: WebSocket | null = null;
-    listeners: Record<number, (str: string) => void> = {};
+    listeners: Map<number, (str: string) => void> = new Map();
 
     get = () => {
         return this.a;
@@ -14,17 +14,15 @@ class GetSet {
             const ws = newA();
 
             ws.onmessage = evt => {
-                const msg = JSON.parse(evt.data)
-
-                console.log(msg)
-            }
+                this.listeners.forEach((cb) => cb(evt.data))
+            };
 
             this.a = ws;
         }
     };
 
     registerHandler = (id: number, cv: (str: string) => void) => {
-        this.listeners[id] = cv;
+        this.listeners.set(id, cv);
     };
 
     send = (data: string) => {
