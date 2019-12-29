@@ -1,1 +1,1 @@
-export default (process.env.NODE_ENV === "production") ? window.location.host : "localhost:9000";
+export default (process.env.NODE_ENV === "production") ? "https://gr2-site.cloud.sdu.dk" : "localhost:9000";

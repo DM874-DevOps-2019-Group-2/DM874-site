@@ -47,7 +47,7 @@ export default class Signin extends React.Component<SignInProps, SignInState> {
     }
 
     private authenticate = async (requestBody: RequestJsonBody) => {
-        const host = AuthHost;
+        const host = AuthHost + "/login";
 
         const additional = () => {
             if (host.startsWith("localhost")) {

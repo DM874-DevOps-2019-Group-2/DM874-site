@@ -1,1 +1,1 @@
-export default "localhost:8084/login"
+export default "https://gr2-site.cloud.sdu.dk"

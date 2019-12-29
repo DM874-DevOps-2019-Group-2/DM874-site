@@ -40,6 +40,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from "@material-ui/core/Divider";
 import MaybeWebsocket from "../util/MaybeWebsocket";
+import AuthHost from "../util/AuthHost";
 
 const styles = (theme: Theme) => createStyles({
     root: {
@@ -65,13 +66,18 @@ interface Message {
     message: string
 }
 
+interface User {
+    id: number
+    name: string
+}
+
 interface HomeState {
     uploadingFile: boolean
     name: string
     newMessage: boolean
     message: string
     messages: Array<Message>
-    userIds: number[]
+    users: Array<User>
 }
 
 class HomeC extends React.Component<HomeProps, HomeState> {
@@ -83,11 +89,33 @@ class HomeC extends React.Component<HomeProps, HomeState> {
                 const parsed = JSON.parse(data)
 
                 if (parsed.$type === "ReceiveMessage") {
-                    this.setState({ messages: this.state.messages.concat([{ sender: "Anon", message: parsed.msg as string }]) })
+                    const maybeName = this.state.users.find((user) => user.id == (parsed.senderId as number));
+
+                    const name = (() => {
+                        if (maybeName === undefined) {
+                            return "Unknown";
+                        } else {
+                            return maybeName.name;
+                        }
+                    })();
+
+
+                    this.setState({ messages: this.state.messages.concat([{ sender: name, message: parsed.msg as string }]) })
                 }
             } catch (e) {
 
             }
+        });
+
+        this.getUsers().then((users) => {
+           const typed = users as Array<[number, string]>;
+
+           const typedUsers = typed.map((user) => {
+              const typedUser: User = {id: user[0], name: user[1]};
+              return typedUser;
+           });
+
+           this.setState({users: typedUsers});
         });
 
         this.state = {
@@ -96,9 +124,29 @@ class HomeC extends React.Component<HomeProps, HomeState> {
             newMessage: true,
             message: "",
             messages: [],
-            userIds: []
+            users: []
         };
     }
+
+    private async getUsers()  {
+        const host = AuthHost + "/users";
+
+        const additional = () => {
+            if (host.startsWith("localhost")) {
+                return "http://";
+            } else {
+                return "";
+            }
+        };
+
+        let response = await fetch(additional() + host, {
+            method: "GET",
+        }).then((e) => {
+            return e
+        });
+
+        return await response.json();
+    };
 
     public newMessageField(): React.ReactNode | null {
         if (this.state.newMessage) {
@@ -119,7 +167,7 @@ class HomeC extends React.Component<HomeProps, HomeState> {
                         const sendMessage = {
                             $type: "SendMessage",
                             message: this.state.message,
-                            destinationUsers: this.state.userIds
+                            destinationUsers: this.state.users.map((user) => user.id)
                         };
 
                         MaybeWebsocket.send(JSON.stringify(sendMessage))
